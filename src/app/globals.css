@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-charcoal: #3d4345;
+  --color-gold: #c9a96e;
+  --color-ivory: #f5f0e8;
+  --color-espresso: #1e1a17;
+  --color-terracotta: #b5623a;
+  --color-olive: #5c6345;
+  --color-smoke: #2a2e2f;
+  --text-on-dark: #f0ebe0;
+  --text-on-light: #1e1a17;
+  --text-muted: #8a8070;
+  --text-gold: #c9a96e;
+  --color-border: rgba(201, 169, 110, 0.25);
+  --color-overlay: rgba(30, 26, 23, 0.65);
+  --color-glass: rgba(61, 67, 69, 0.75);
+  --chef-bg: #0f0d0b;
+  --chef-gold: #e8c87a;
+  --chef-surface: #1a1614;
+  --chef-text: #ede5d4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-espresso);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-espresso);
+  color: var(--text-on-dark);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-weight: 300;
+  text-rendering: geometricPrecision;
+  transition: background 600ms cubic-bezier(0.4, 0, 0.2, 1), color 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.rtl {
+  font-family: var(--font-naskh), serif;
+}
+
+body.chefs-table-mode {
+  --color-gold: var(--chef-gold);
+  --color-espresso: var(--chef-bg);
+  --color-smoke: var(--chef-surface);
+  --text-on-dark: var(--chef-text);
+  background: var(--chef-bg);
+  font-size: 105%;
+}
+
+body.chefs-table-mode img,
+body.chefs-table-mode video {
+  filter: sepia(0.25) brightness(0.85);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-espresso);
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+.grain-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-image: url("/textures/grain.svg");
+  opacity: 0.06;
+  mix-blend-mode: screen;
+  animation: grainMove 0.5s steps(1) infinite;
+}
+
+.section-shell {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.font-display {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--color-gold);
+  font-size: 0.6875rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.section-label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-gold);
+}
+
+.gold-divider {
+  height: 1px;
+  transform-origin: left;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0.65;
+}
+
+.candle-trail {
+  pointer-events: none;
+  position: fixed;
+  z-index: 9997;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--chef-gold);
+  box-shadow: 0 0 18px var(--chef-gold);
+  transform: translate(-50%, -50%);
+  animation: candleTrail 650ms ease-out forwards;
+}
+
+@keyframes candleTrail {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2);
+  }
+}
+
+@keyframes grainMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 120px 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
