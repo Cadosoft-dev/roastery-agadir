@@ -129,51 +129,34 @@ export function Flipbook({ items, lang }: Props) {
 
           {/* Page 1: Table of Contents */}
           <div className="flipbook-page bg-[var(--color-ivory)]" data-density="hard">
-            <div className="flex h-[560px]">
-              {/* Left: Sommaire */}
-              <div className="w-1/2 border-r border-[var(--color-border)] p-8 text-[var(--text-on-light)]">
-                <p className="font-display text-5xl font-bold uppercase tracking-wider text-[var(--color-espresso)]">
+            <div className="relative flex h-[560px] overflow-hidden">
+              {/* Vertical SOMMAIRE text */}
+              <div className="flex w-20 items-center justify-center border-r border-[var(--color-border)] bg-[var(--color-ivory)]">
+                <span
+                  className="whitespace-nowrap font-display text-6xl font-black uppercase tracking-wider text-[var(--color-espresso)]"
+                  style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                >
                   {lang === "fr" ? "Sommaire" : lang === "en" ? "Contents" : "المحتويات"}
-                </p>
-                <div className="mt-8 flex flex-col gap-4">
+                </span>
+              </div>
+              {/* Category list */}
+              <div className="flex flex-1 flex-col justify-center px-8 py-10">
+                <div className="flex flex-col gap-3">
                   {categories.map((cat, i) => (
                     <button
                       key={cat}
                       type="button"
                       onClick={() => goToCategory(cat)}
-                      className="flex items-center gap-3 text-left text-sm transition hover:text-[var(--color-gold)]"
+                      className="group flex items-center gap-2 text-left text-sm transition"
                     >
                       <span className="text-[var(--color-gold)]">★</span>
-                      <span className="flex-1 font-medium">{categoryLabels[cat][lang]}</span>
-                      <span className="text-xs text-[var(--text-muted)]">P.{i + 3}</span>
+                      <span className="text-[var(--color-gold)]/60 text-xs">| R</span>
+                      <span className="flex-1 font-semibold text-[var(--text-on-light)] group-hover:text-[var(--color-gold)]">
+                        {categoryLabels[cat][lang]}
+                      </span>
+                      <span className="text-xs font-medium text-[var(--text-muted)]">P.{String(i + 1).padStart(2, "0")}</span>
                     </button>
                   ))}
-                </div>
-              </div>
-              {/* Right: Featured dishes preview */}
-              <div className="flex w-1/2 flex-col gap-4 p-6">
-                {items.filter((item) => item.isSignature).slice(0, 3).map((item) => {
-                  const name = lang === "fr" ? item.nameFR : lang === "en" ? item.nameEN : item.nameAR;
-                  return (
-                    <div key={item.id} className="flex gap-3">
-                      <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-sm">
-                        <Image
-                          src={item.photo ?? fallbackImage}
-                          alt={name}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-[var(--text-on-light)]">{name}</p>
-                        <p className="mt-1 text-xs text-[var(--text-muted)]">{formatPrice(item.price)}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-                <div className="mt-auto text-right">
-                  <span className="text-xs text-[var(--text-muted)]">P.01</span>
                 </div>
               </div>
             </div>
