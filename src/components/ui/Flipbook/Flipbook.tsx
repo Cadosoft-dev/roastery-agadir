@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BookSpine } from "./BookSpine";
 import { categoryLabels } from "@/data/menu";
 import { formatPrice } from "@/lib/utils";
@@ -16,19 +16,16 @@ type Props = {
 
 export function Flipbook({ items, lang }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [showingNext, setShowingNext] = useState(false);
   const [dragging, setDragging] = useState(false);
   const dragX = useMotionValue(0);
   const rotateY = useTransform(dragX, [-400, 0], [-180, 0]);
   const opacity = useTransform(dragX, [-400, -100, 0], [0.6, 0.8, 1]);
   const activeItem = items[activeIndex];
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fallbackImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80";
 
   const nextItem = items[activeIndex + 1];
   const nextName = nextItem ? (lang === "fr" ? nextItem.nameFR : lang === "en" ? nextItem.nameEN : nextItem.nameAR) : "";
-  const nextDesc = nextItem ? (lang === "fr" ? nextItem.descriptionFR : lang === "en" ? nextItem.descriptionEN : nextItem.descriptionAR) : "";
 
   const name = lang === "fr" ? activeItem.nameFR : lang === "en" ? activeItem.nameEN : activeItem.nameAR;
   const description = lang === "fr" ? activeItem.descriptionFR : lang === "en" ? activeItem.descriptionEN : activeItem.descriptionAR;
@@ -120,7 +117,7 @@ export function Flipbook({ items, lang }: Props) {
               backfaceVisibility: "hidden",
             }}
             drag="x"
-            dragConstraints={{ left: -400, right: 0 }}
+            dragConstraints={{ left: -400, right: 400 }}
             dragElastic={0.1}
             dragMomentum={false}
             onDragStart={onDragStart}
