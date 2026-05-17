@@ -19,6 +19,7 @@ export function Flipbook({ items, lang }: Props) {
   const flipRef = useRef<any>(null);
 
   const fallbackImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80";
+  const coverImage = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80";
 
   const categories = Array.from(new Set(items.map((item) => item.category)));
 
@@ -26,8 +27,8 @@ export function Flipbook({ items, lang }: Props) {
     (category: MenuCategory) => {
       const index = items.findIndex((item) => item.category === category);
       if (index >= 0 && flipRef.current) {
-        flipRef.current.flip(index);
-        setCurrentPage(index);
+        flipRef.current.flip(index + 2);
+        setCurrentPage(index + 2);
       }
     },
     [items]
@@ -87,18 +88,98 @@ export function Flipbook({ items, lang }: Props) {
     <div>
       <BookSpine
         categories={categories}
-        activeCategory={items[currentPage]?.category ?? items[0]?.category}
+        activeCategory={items[currentPage - 2]?.category ?? items[0]?.category}
         lang={lang}
         onSelect={goToCategory}
       />
 
-      {/* Desktop: real page-flip book — image top, text bottom */}
+      {/* Desktop: real page-flip book */}
       <div className="relative mx-auto mt-10 hidden md:block">
         <div
           ref={bookRef}
           className="mx-auto shadow-book"
           style={{ maxWidth: "800px" }}
         >
+          {/* Page 0: Cover */}
+          <div className="flipbook-page" data-density="hard">
+            <div className="relative h-[560px] overflow-hidden bg-[var(--color-espresso)]">
+              <Image
+                src={coverImage}
+                alt="ROASTERY Agadir cover"
+                fill
+                sizes="400px"
+                className="object-cover opacity-60"
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-center">
+                  <span className="text-7xl text-[var(--color-gold)]">★</span>
+                  <div className="mx-auto mt-4 h-px w-24 bg-[var(--color-gold)]" />
+                  <span className="mt-4 block font-display text-8xl font-light text-[var(--color-gold)]">R</span>
+                  <span className="text-xs text-[var(--color-gold)]">®</span>
+                  <p className="mt-8 text-xs uppercase tracking-[0.4em] text-[var(--color-ivory)]/80">
+                    {lang === "fr" ? "La Carte" : lang === "en" ? "The Menu" : "القائمة"}
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--color-ivory)]/50">
+                    ROASTERY AGADIR
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Page 1: Table of Contents */}
+          <div className="flipbook-page bg-[var(--color-ivory)]" data-density="hard">
+            <div className="flex h-[560px]">
+              {/* Left: Sommaire */}
+              <div className="w-1/2 border-r border-[var(--color-border)] p-8 text-[var(--text-on-light)]">
+                <p className="font-display text-5xl font-bold uppercase tracking-wider text-[var(--color-espresso)]">
+                  {lang === "fr" ? "Sommaire" : lang === "en" ? "Contents" : "المحتويات"}
+                </p>
+                <div className="mt-8 flex flex-col gap-4">
+                  {categories.map((cat, i) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => goToCategory(cat)}
+                      className="flex items-center gap-3 text-left text-sm transition hover:text-[var(--color-gold)]"
+                    >
+                      <span className="text-[var(--color-gold)]">★</span>
+                      <span className="flex-1 font-medium">{categoryLabels[cat][lang]}</span>
+                      <span className="text-xs text-[var(--text-muted)]">P.{i + 3}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Right: Featured dishes preview */}
+              <div className="flex w-1/2 flex-col gap-4 p-6">
+                {items.filter((item) => item.isSignature).slice(0, 3).map((item) => {
+                  const name = lang === "fr" ? item.nameFR : lang === "en" ? item.nameEN : item.nameAR;
+                  return (
+                    <div key={item.id} className="flex gap-3">
+                      <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-sm">
+                        <Image
+                          src={item.photo ?? fallbackImage}
+                          alt={name}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-[var(--text-on-light)]">{name}</p>
+                        <p className="mt-1 text-xs text-[var(--text-muted)]">{formatPrice(item.price)}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="mt-auto text-right">
+                  <span className="text-xs text-[var(--text-muted)]">P.01</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Menu item pages */}
           {items.map((item, index) => {
             const name = lang === "fr" ? item.nameFR : lang === "en" ? item.nameEN : item.nameAR;
             const description = lang === "fr" ? item.descriptionFR : lang === "en" ? item.descriptionEN : item.descriptionAR;
@@ -137,7 +218,7 @@ export function Flipbook({ items, lang }: Props) {
                     </div>
                     <div className="flex items-end justify-between border-t border-[var(--color-border)] pt-4">
                       <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                        {index + 1} / {items.length}
+                        P.{index + 3}
                       </span>
                       <strong className="font-display text-2xl font-normal text-[var(--color-terracotta)]">
                         {formatPrice(item.price)}
@@ -161,7 +242,7 @@ export function Flipbook({ items, lang }: Props) {
             <ChevronLeft size={20} />
           </button>
           <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-on-dark)]/60">
-            {currentPage + 1} / {items.length}
+            {currentPage + 1} / {items.length + 2}
           </span>
           <button
             type="button"
@@ -179,8 +260,8 @@ export function Flipbook({ items, lang }: Props) {
         <div className="overflow-hidden rounded-sm border border-[var(--color-border)] bg-[var(--color-smoke)]">
           <div className="relative h-56">
             <Image
-              src={items[currentPage]?.photo ?? fallbackImage}
-              alt={lang === "fr" ? items[currentPage]?.nameFR : lang === "en" ? items[currentPage]?.nameEN : items[currentPage]?.nameAR}
+              src={items[currentPage - 2]?.photo ?? fallbackImage}
+              alt={lang === "fr" ? items[currentPage - 2]?.nameFR : lang === "en" ? items[currentPage - 2]?.nameEN : items[currentPage - 2]?.nameAR}
               fill
               sizes="100vw"
               className="object-cover"
@@ -189,17 +270,17 @@ export function Flipbook({ items, lang }: Props) {
           </div>
           <div className="p-5">
             <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[var(--color-gold)]">
-              {categoryLabels[items[currentPage]?.category]?.[lang]}
+              {categoryLabels[items[currentPage - 2]?.category]?.[lang]}
             </p>
             <h3 className="font-display mt-2 text-2xl text-[var(--text-on-dark)]">
-              {lang === "fr" ? items[currentPage]?.nameFR : lang === "en" ? items[currentPage]?.nameEN : items[currentPage]?.nameAR}
+              {lang === "fr" ? items[currentPage - 2]?.nameFR : lang === "en" ? items[currentPage - 2]?.nameEN : items[currentPage - 2]?.nameAR}
             </h3>
             <p className="mt-3 text-sm leading-7 text-[var(--text-on-dark)]/75">
-              {lang === "fr" ? items[currentPage]?.descriptionFR : lang === "en" ? items[currentPage]?.descriptionEN : items[currentPage]?.descriptionAR}
+              {lang === "fr" ? items[currentPage - 2]?.descriptionFR : lang === "en" ? items[currentPage - 2]?.descriptionEN : items[currentPage - 2]?.descriptionAR}
             </p>
             <div className="mt-4 flex items-center justify-between">
-              <span className="text-sm text-[var(--color-gold)]">{formatPrice(items[currentPage]?.price)}</span>
-              <span className="text-xs text-[var(--text-muted)]">{currentPage + 1} / {items.length}</span>
+              <span className="text-sm text-[var(--color-gold)]">{formatPrice(items[currentPage - 2]?.price)}</span>
+              <span className="text-xs text-[var(--text-muted)]">{currentPage - 1} / {items.length}</span>
             </div>
           </div>
         </div>
@@ -208,12 +289,12 @@ export function Flipbook({ items, lang }: Props) {
           <button
             type="button"
             onClick={() => {
-              if (currentPage > 0) {
+              if (currentPage > 2) {
                 setCurrentPage((i) => i - 1);
               }
             }}
             className="grid h-11 w-11 place-items-center rounded-sm border border-[var(--color-border)] text-[var(--color-gold)] transition disabled:opacity-40"
-            disabled={currentPage === 0}
+            disabled={currentPage <= 2}
             aria-label="Previous menu page"
           >
             <ChevronLeft size={20} />
@@ -221,12 +302,12 @@ export function Flipbook({ items, lang }: Props) {
           <button
             type="button"
             onClick={() => {
-              if (currentPage < items.length - 1) {
+              if (currentPage < items.length + 1) {
                 setCurrentPage((i) => i + 1);
               }
             }}
             className="grid h-11 w-11 place-items-center rounded-sm border border-[var(--color-border)] text-[var(--color-gold)] transition disabled:opacity-40"
-            disabled={currentPage === items.length - 1}
+            disabled={currentPage >= items.length + 1}
             aria-label="Next menu page"
           >
             <ChevronRight size={20} />
