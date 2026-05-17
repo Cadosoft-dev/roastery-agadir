@@ -51,13 +51,13 @@ export function Flipbook({ items, lang }: Props) {
     import("page-flip").then(({ PageFlip }) => {
       if (!bookRef.current) return;
       const pageFlip = new PageFlip(bookRef.current, {
-        width: 430,
-        height: 520,
+        width: 400,
+        height: 560,
         size: "fixed",
         minWidth: 300,
         maxWidth: 500,
         minHeight: 400,
-        maxHeight: 600,
+        maxHeight: 650,
         maxShadowOpacity: 0.5,
         showCover: true,
         mobileScrollSupport: true,
@@ -92,12 +92,12 @@ export function Flipbook({ items, lang }: Props) {
         onSelect={goToCategory}
       />
 
-      {/* Desktop: real page-flip book */}
+      {/* Desktop: real page-flip book — image top, text bottom */}
       <div className="relative mx-auto mt-10 hidden md:block">
         <div
           ref={bookRef}
           className="mx-auto shadow-book"
-          style={{ maxWidth: "860px" }}
+          style={{ maxWidth: "800px" }}
         >
           {items.map((item, index) => {
             const name = lang === "fr" ? item.nameFR : lang === "en" ? item.nameEN : item.nameAR;
@@ -108,36 +108,38 @@ export function Flipbook({ items, lang }: Props) {
                 className="flipbook-page bg-[var(--color-ivory)]"
                 data-density="hard"
               >
-                <div className="flex h-[520px]">
-                  {/* Left side: image */}
-                  <div className="relative w-1/2 overflow-hidden bg-[var(--color-smoke)]">
+                <div className="flex h-[560px] flex-col">
+                  {/* Top half: image */}
+                  <div className="relative h-1/2 overflow-hidden bg-[var(--color-smoke)]">
                     <Image
                       src={item.photo ?? fallbackImage}
                       alt={name}
                       fill
-                      sizes="430px"
+                      sizes="400px"
                       className="object-cover"
                       style={{ filter: "sepia(0.1) brightness(0.95)" }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
-                    <div className="absolute bottom-6 left-6">
-                      <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-ivory)]/70">
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
+                    <div className="absolute bottom-4 left-5">
+                      <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-ivory)]/80">
                         {categoryLabels[item.category][lang]}
                       </p>
                     </div>
                   </div>
-                  {/* Right side: text */}
-                  <div className="relative w-1/2 bg-[var(--color-ivory)] p-10 text-[var(--text-on-light)]">
-                    <p className="text-xs uppercase tracking-[0.25em] text-[var(--text-muted)]">
-                      {item.isSignature ? "Signature" : "ROASTERY"}
-                    </p>
-                    <h3 className="font-display mt-8 text-4xl leading-none">{name}</h3>
-                    <p className="mt-6 text-base leading-8 text-[var(--color-charcoal)]">{description}</p>
-                    <div className="absolute bottom-8 left-10 right-10 flex items-end justify-between border-t border-[var(--color-border)] pt-6">
+                  {/* Bottom half: text */}
+                  <div className="relative flex h-1/2 flex-col justify-between bg-[var(--color-ivory)] p-8 text-[var(--text-on-light)]">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.25em] text-[var(--text-muted)]">
+                        {item.isSignature ? "Signature" : "ROASTERY"}
+                      </p>
+                      <h3 className="font-display mt-4 text-3xl leading-none">{name}</h3>
+                      <p className="mt-4 text-sm leading-7 text-[var(--color-charcoal)]">{description}</p>
+                    </div>
+                    <div className="flex items-end justify-between border-t border-[var(--color-border)] pt-4">
                       <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
                         {index + 1} / {items.length}
                       </span>
-                      <strong className="font-display text-3xl font-normal text-[var(--color-terracotta)]">
+                      <strong className="font-display text-2xl font-normal text-[var(--color-terracotta)]">
                         {formatPrice(item.price)}
                       </strong>
                     </div>
