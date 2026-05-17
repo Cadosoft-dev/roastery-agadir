@@ -30,7 +30,7 @@ export function FloatingActions() {
         aria-label={t.ui.whatsapp}
         className="fixed bottom-6 right-6 z-[9998] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-[var(--color-ivory)] shadow-2xl transition hover:scale-105 max-sm:left-1/2 max-sm:right-auto max-sm:-translate-x-1/2"
       >
-        <span className="absolute inset-0 -z-10 animate-pulse-ring rounded-full bg-[#25D366]" />
+        <span className="absolute inset-0 -z-10 animate-wa-pulse rounded-full bg-[#25D366]" />
         <MessageCircle size={25} />
       </a>
 

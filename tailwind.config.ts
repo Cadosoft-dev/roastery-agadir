@@ -34,7 +34,7 @@ const config: Config = {
       },
       animation: {
         "ken-burns": "kenBurns 10s ease-in-out infinite alternate",
-        "pulse-ring": "pulseRing 2s ease-out infinite",
+        "wa-pulse": "waPulse 2s ease-out infinite",
         grain: "grainMove 0.5s steps(1) infinite"
       },
       keyframes: {
@@ -42,7 +42,7 @@ const config: Config = {
           "0%": { transform: "scale(1)" },
           "100%": { transform: "scale(1.05)" }
         },
-        pulseRing: {
+        waPulse: {
           "0%": { transform: "scale(0.8)", opacity: "0.8" },
           "100%": { transform: "scale(2)", opacity: "0" }
         },
