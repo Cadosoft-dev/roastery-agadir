@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Flame, Menu, Volume2, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useThemeMode } from "@/components/providers/ThemeProvider";
 import { Button } from "@/components/ui/Button";
@@ -16,6 +16,26 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/ambient-cafe.mp3");
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.4;
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (soundOn) {
+      audioRef.current.play().catch(() => setSoundOn(false));
+    } else {
+      audioRef.current.pause();
+    }
+  }, [soundOn]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
